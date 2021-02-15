@@ -4,6 +4,8 @@ import sys
 import time
 from urllib.error import URLError
 from urllib.request import *
+import zipfile
+import shutil
 
 headers = {
     'User-Agent':
@@ -15,6 +17,7 @@ headers = {
 
 
 def clone(git_url, path=os.getcwd(), branch_name='master'):
+    start_path = os.path.abspath(os.getcwd())
     git_url = git_url.replace(' ', '')
     if git_url[-1] == '/':
         git_url = git_url[:-1]
@@ -25,7 +28,7 @@ def clone(git_url, path=os.getcwd(), branch_name='master'):
     url = 'https://codeload.github.com/{}/{}/zip/{}'.format(
         username, projectname, branch_name)
     filename = path + '/' + projectname
-    zipfile_name = filename + '.mcaddon'
+    zipfile_name = filename + '.zip'
     try:
         urlretrieve(url, zipfile_name, reporthook=report_hook)
     except URLError:
@@ -38,6 +41,20 @@ def clone(git_url, path=os.getcwd(), branch_name='master'):
         pattern = '/{}/{}/tree/(.*?)/'.format(username, projectname)
         b_name = re.findall(pattern, str(response.read()))[-1]
         return clone(git_url, path, b_name)
+
+    with zipfile.ZipFile(zipfile_name, 'r') as f:
+        f.extractall(path + '/.')
+    if os.path.exists(filename + '-' + branch_name):
+        os.rename(filename + '-' + branch_name, filename)
+    os.remove(zipfile_name)
+    os.chdir(path)
+    for e in os.scandir(filename):
+        if e.is_dir():
+            shutil.make_archive(e.name, "zip", root_dir=e.path)
+            os.rename(e.name + ".zip", e.name + ".mcaddon")
+    shutil.rmtree(filename, ignore_errors=True)
+    os.chdir(start_path)
+
 
 
 def report_hook(count, block_size, total_size):
