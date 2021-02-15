@@ -12,3 +12,6 @@ Instructions:
 3) launch main.py (You will custom downloading path)
 4) open result .mcaddon file using Minecraft
 5) Enjoy your game ;)
+
+
+P.S. Some code was stolen from https://github.com/twfb/git-clone
