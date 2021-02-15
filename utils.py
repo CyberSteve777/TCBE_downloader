@@ -17,7 +17,7 @@ headers = {
 }
 
 
-def clone(git_url, path=os.getcwd(), branch_name='master'):
+def clone(git_url, path=os.getcwd(), branch_name='master', separate=False):
     start_path = os.path.abspath(os.getcwd())
     git_url = git_url.replace(' ', '')
     if git_url[-1] == '/':
@@ -43,18 +43,21 @@ def clone(git_url, path=os.getcwd(), branch_name='master'):
         b_name = re.findall(pattern, str(response.read()))[-1]
         return clone(git_url, path, b_name)
 
-    with zipfile.ZipFile(zipfile_name, 'r') as f:
-        f.extractall(path + '/.')
-    if os.path.exists(filename + '-' + branch_name):
-        os.rename(filename + '-' + branch_name, filename)
-    os.remove(zipfile_name)
-    os.chdir(path)
-    for e in os.scandir(filename):
-        if e.is_dir():
-            shutil.make_archive(e.name, "zip", root_dir=e.path)
-            os.rename(e.name + ".zip", e.name + ".mcaddon")
-    shutil.rmtree(filename, ignore_errors=True)
-    os.chdir(start_path)
+    if separate:
+        with zipfile.ZipFile(zipfile_name, 'r') as f:
+            f.extractall(path + '/.')
+        if os.path.exists(filename + '-' + branch_name):
+            os.rename(filename + '-' + branch_name, filename)
+        os.remove(zipfile_name)
+        os.chdir(path)
+        for e in os.scandir(filename):
+            if e.is_dir():
+                shutil.make_archive(e.name, "zip", root_dir=e.path)
+                os.rename(e.name + ".zip", e.name + ".mcaddon")
+        shutil.rmtree(filename, ignore_errors=True)
+        os.chdir(start_path)
+    else:
+        os.rename(zipfile_name, filename + ".mcaddon")
 
 
 def report_hook(count, block_size, total_size):
