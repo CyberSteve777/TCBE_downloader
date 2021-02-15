@@ -84,7 +84,7 @@ class Downloader(QWidget):
             if ok:
                 app.exit(0)
         else:
-            ok = QMessageBox.critical(self, "Error", "Skipped downloading")
+            ok = QMessageBox.critical(self, "Error", "Download was canceled by user")
             if ok:
                 pass
 
