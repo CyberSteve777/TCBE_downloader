@@ -3,13 +3,8 @@ import re
 import sys
 import time
 from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QPushButton, QMessageBox
-
-try:
-    from urllib.error import URLError
-    from urllib import request as urllib2
-except ImportError:
-    from urllib2 import URLError
-    import urllib2
+from urllib.error import URLError
+from urllib.request import *
 
 headers = {
     'User-Agent':
@@ -20,7 +15,7 @@ headers = {
 }
 
 
-def git_clone(git_url, path=os.getcwd(), branch_name='master'):
+def clone(git_url, path=os.getcwd(), branch_name='master'):
     git_url = git_url.replace(' ', '')
     if git_url[-1] == '/':
         git_url = git_url[:-1]
@@ -33,18 +28,17 @@ def git_clone(git_url, path=os.getcwd(), branch_name='master'):
     filename = path + '/' + projectname
     zipfile_name = filename + '.mcaddon'
     try:
-        urllib2.urlretrieve(url,
-                            zipfile_name, reporthook=report_hook)
+        urlretrieve(url, zipfile_name, reporthook=report_hook)
     except URLError:
         headers['Host'] = 'github.com'
-        request = urllib2.Request(
+        request = Request(
             'https://github.com/{}/{}'.format(username, projectname),
             headers=headers)
-        response = urllib2.urlopen(request)
+        response = urlopen(request)
 
         pattern = '/{}/{}/tree/(.*?)/'.format(username, projectname)
         b_name = re.findall(pattern, str(response.read()))[-1]
-        return git_clone(git_url, path, b_name)
+        return clone(git_url, path, b_name)
 
 
 def report_hook(count, block_size, total_size):
@@ -85,7 +79,7 @@ class Downloader(QWidget):
         global app
         path = QFileDialog.getExistingDirectory()
         if path:
-            git_clone("https://github.com/Ryorama/TerrariaCraft-Bedrock", path)
+            clone("https://github.com/Ryorama/TerrariaCraft-Bedrock", path)
             ok = QMessageBox.information(self, "Success", "Addon was successfully downloaded")
             if ok:
                 app.exit(0)
