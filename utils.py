@@ -7,6 +7,7 @@ from urllib.request import *
 import zipfile
 import shutil
 
+
 headers = {
     'User-Agent':
     r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -56,13 +57,11 @@ def clone(git_url, path=os.getcwd(), branch_name='master'):
     os.chdir(start_path)
 
 
-
 def report_hook(count, block_size, total_size):
     global start_time
     if count == 0:
         start_time = time.time()
         return
-
     duration = time.time() - start_time + 0.000001
     progress_size = int(count * block_size)
     speed = int(progress_size / (1024 * duration))
