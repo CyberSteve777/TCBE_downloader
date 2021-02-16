@@ -7,7 +7,7 @@ This downloader clones code from https://github.com/Ryorama/TerrariaCraft-Bedroc
 
 
 Instructions:
-1) Install Python 3.8+ and add it to PATH
+1) Install Python 3.6+ and add it to PATH
 2) Install requirements (you need to run command "pip install -r requirements.txt" in the same dir as main.py file, if you use IOS/Android, you can skip this step)
 3) Download addon:
    1) If you are on PC, you can run both main files, but with mainPC.py you can select downloading path using GUI.
