@@ -14,6 +14,3 @@ Instructions:
    2) If you use Android/IOS, you should run main_aori.py. Result files will be in the same dir as main_aori.py file.
 4) open result .mcaddon file using Minecraft
 5) Enjoy your game ;)
-
-
-P.S. Some code was stolen from https://github.com/twfb/git-clone
